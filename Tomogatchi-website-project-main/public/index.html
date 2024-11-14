@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tamagotchi Game</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://unpkg.com/vue@3"></script>
+</head>
+<body>
+  <div id="app">
+    <div class="container">
+      <h1>Tamagotchi</h1>
+    
+      <!-- Pet Selector -->
+      <div class="pet-selector">
+        <label for="pet-select">Choose a pet:</label>
+        <select id="pet-select" @change="changePet">
+          <option value="pet1">Pet 1</option>
+          <option value="pet2">Pet 2</option>
+          <option value="pet3">Pet 3</option>
+        </select>
+      </div>
+    
+      <!-- Display Tamagotchi Pet -->
+      <div class="tamagotchi">
+        <img :src="petImage" alt="Tamagotchi">
+      </div>
+    
+      <!-- Status Panel -->
+      <div class="status">
+        <p>Happiness: <span>{{ happiness }}</span></p>
+        <p>Hunger: <span>{{ hunger }}</span></p>
+        <p>Energy: <span>{{ energy }}</span></p>
+      </div>
+    
+      <!-- Interaction Buttons -->
+      <div class="buttons">
+        <button @click="feedPet">Feed</button>
+        <button @click="playWithPet">Play</button>
+        <button @click="sleepPet">Sleep</button>
+      </div>
+    
+      <!-- Time and updates -->
+      <p id="time">Time: {{ time }}s</p>
+    </div>
+  </div>
+
+  
+
+  <script src="app.js"></script>
+</body>
+</html>
