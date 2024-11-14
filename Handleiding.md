@@ -1,6 +1,7 @@
 Je hebt vue CLI nodig, je vindt het installatie pagina op dit link: 
 https://cli.vuejs.org/guide/installation.html
-Je hebt ook visual studio code nodig, dit vind je hier: 
+
+Je hebt ook visual studio code nodig, dit vindt je hier: 
 https://code.visualstudio.com/
 
 Nu moet je de volgende commandos uitvoeren op cmd:
