@@ -14,3 +14,6 @@ Wanneer het allemaal geinstalleerd is kan je het bestand openen met visual studi
 Wanneer je het bestand opent met CMD of VSC schrijf je het volegende commando:
 - npm run serve
 (Dit zorgt ervoor dat je het website kunt zien in je lokale folder)
+
+Als je een build versie wilt maken doe je:
+- npm run build
