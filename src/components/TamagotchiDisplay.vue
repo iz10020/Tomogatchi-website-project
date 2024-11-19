@@ -7,11 +7,13 @@
       <p class="stat-item">Happiness: {{ stats.happiness }}%</p>
       <p class="stat-item">Health: {{ computedHealth }}%</p>
       <p class="stat-item">Hunger: {{ stats.hunger }}%</p>
+      <p class="stat-item">Cleanliness: {{ stats.cleanliness }}%</p>
     </div>
 
     <div class="buttons" v-if="isAlive">
       <button @click="feedPet">Feed</button>
       <button @click="playGame">Play Game</button>
+      <button @click="cleanPet">Clean</button>
     </div>
 
     <div v-else>
@@ -31,6 +33,7 @@ export default {
       stats: {
         happiness: 100,
         hunger: 0,
+        cleanliness: 100,
       },
       isAlive: true,
     };
@@ -38,16 +41,23 @@ export default {
 
   computed: {
     computedHealth() {
-      const happinessFactor = this.stats.happiness * 0.7;
-      const hungerFactor = (100 - this.stats.hunger) * 0.3;
-      return Math.round(happinessFactor + hungerFactor);
+      // Adjust health based on the new weights
+      const happinessFactor = this.stats.happiness * 0.3;  // 30% of happiness contributes to health
+      const hungerFactor = (100 - this.stats.hunger) * 0.4; // 40% of hunger (lower hunger = higher health)
+      const cleanlinessFactor = this.stats.cleanliness * 0.3; // 30% of cleanliness contributes to health (no inversion)
+
+      // Sum up the factors without dividing by 3
+      let health = happinessFactor + hungerFactor + cleanlinessFactor;
+
+      // Return health as a rounded value, ensuring it stays between 0 and 100
+      return Math.max(0, Math.min(100, health)).toFixed(1);
     },
   },
 
   watch: {
     computedHealth(newHealth) {
       if (newHealth <= 0) {
-        this.isAlive = false;
+        this.isAlive = false; // Tamagotchi dies when health reaches 0
       }
     },
   },
@@ -55,28 +65,39 @@ export default {
   methods: {
     feedPet() {
       if (this.isAlive) {
-        this.stats.hunger = Math.max(this.stats.hunger - 3, 0);
+        this.stats.hunger = Math.max(this.stats.hunger - 3, 0); // Feeding reduces hunger
       }
     },
 
     playGame() {
       if (this.isAlive) {
-        this.stats.happiness = Math.min(this.stats.happiness + 10, 100);
+        this.stats.happiness = Math.min(this.stats.happiness + 10, 100); // Playing increases happiness
+      }
+    },
+
+    cleanPet() {
+      if (this.isAlive) {
+        this.stats.cleanliness = Math.min(this.stats.cleanliness + 20, 100); // Cleaning restores cleanliness
       }
     },
 
     restartGame() {
+      // Reset stats to their initial values
       this.stats.happiness = 100;
       this.stats.hunger = 0;
+      this.stats.cleanliness = 100; // Reset cleanliness to 100
       this.isAlive = true;
     },
   },
 
   mounted() {
+    // Simulate the passage of time (every 5 seconds)
     setInterval(() => {
       if (this.isAlive) {
+        // Increment hunger, decrease happiness, and cleanliness over time
         if (this.stats.hunger < 100) this.stats.hunger += 5;
         if (this.stats.happiness > 0) this.stats.happiness -= 1;
+        if (this.stats.cleanliness > 0) this.stats.cleanliness -= 2;
       }
     }, 5000);
   },
