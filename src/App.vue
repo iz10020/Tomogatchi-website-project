@@ -1,15 +1,16 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <!-- Verwijder de Vue logo afbeelding -->
+  <TamagotchiDisplay />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+// Importeer de TamagotchiDisplay component met de juiste naam
+import TamagotchiDisplay from './components/TamagotchiDisplay.vue';  
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    TamagotchiDisplay  // Voeg de component toe aan de components sectie
   }
 }
 </script>
