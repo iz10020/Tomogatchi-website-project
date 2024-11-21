@@ -1,35 +1,58 @@
 <template>
   <div class="tamagotchi">
     <h1>Your Tamagotchi</h1>
-    <img :src="petImage" alt="Tamagotchi" class="pet-image" v-if="isAlive"/>
+    <img :src="petImage" alt="Tamagotchi" class="pet-image" v-if="isAlive" />
 
-    <div class="stats" v-if="isAlive">
-      <p class="stat-item">Happiness: {{ stats.happiness }}%</p>
-      <p class="stat-item">Health: {{ computedHealth }}%</p>
-      <p class="stat-item">Hunger: {{ stats.hunger }}%</p>
-      <p class="stat-item">Cleanliness: {{ stats.cleanliness }}%</p>
-    </div>
+    <div class="stats-and-buttons" v-if="isAlive">
+      <div class="stat-group">
+        <p :class="getStatClass(stats.happiness, false)" class="stat-item">
+          Happiness: {{ stats.happiness }}%
+        </p>
+        <button @click="playGame" class="image-button">
+          <img src="@/assets/gamebutton.gif" alt="Play Game Button" />
+        </button>
+      </div>
 
-    <div class="buttons" v-if="isAlive">
-      <button @click="feedPet">Feed</button>
-      <button @click="playGame">Play Game</button>
-      <button @click="cleanPet">Clean</button>
+      <div class="stat-group health-stat">
+        <p :class="getStatClass(computedHealth, false)" class="stat-item">
+          Health: {{ computedHealth }}%
+        </p>
+        <img :src="healthImage" alt="Health Status" class="health-image" />
+      </div>
+
+      <div class="stat-group">
+        <p :class="getStatClass(stats.hunger, true)" class="stat-item">
+          Hunger: {{ stats.hunger }}%
+        </p>
+        <button @click="feedPet" class="image-button">
+          <img src="@/assets/feedbutton.png" alt="Feed Button" />
+        </button>
+      </div>
+
+      <div class="stat-group">
+        <p :class="getStatClass(stats.cleanliness, false)" class="stat-item">
+          Cleanliness: {{ stats.cleanliness }}%
+        </p>
+        <button @click="cleanPet" class="image-button">
+          <img src="@/assets/cleanbutton.png" alt="Clean Button" />
+        </button>
+      </div>
     </div>
 
     <div v-else>
       <p>Your Tamagotchi has passed away. 😢</p>
-      <button @click="restartGame">Restart</button>
+      <button @click="restartGame" class="restart-button">Restart</button>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'TamagotchiDisplay',
+  name: "TamagotchiDisplay",
 
   data() {
     return {
-      petImage: require('../assets/kirby star.gif'),
+      petImage: require("../assets/kirby star.gif"),
       stats: {
         happiness: 100,
         hunger: 0,
@@ -41,63 +64,97 @@ export default {
 
   computed: {
     computedHealth() {
-      // Adjust health based on the new weights
-      const happinessFactor = this.stats.happiness * 0.3;  // 30% of happiness contributes to health
-      const hungerFactor = (100 - this.stats.hunger) * 0.4; // 40% of hunger (lower hunger = higher health)
-      const cleanlinessFactor = this.stats.cleanliness * 0.3; // 30% of cleanliness contributes to health (no inversion)
+      const happinessFactor = this.stats.happiness * 0.3;
+      const hungerFactor = (100 - this.stats.hunger) * 0.4;
+      const cleanlinessFactor = this.stats.cleanliness * 0.3;
 
-      // Sum up the factors without dividing by 3
       let health = happinessFactor + hungerFactor + cleanlinessFactor;
 
-      // Return health as a rounded value, ensuring it stays between 0 and 100
       return Math.max(0, Math.min(100, health)).toFixed(1);
+    },
+
+    healthImage() {
+      if (!this.isAlive) {
+        return require("@/assets/healthstat6.png");
+      }
+
+      const health = parseFloat(this.computedHealth);
+
+      if (health >= 90) {
+        return require("@/assets/healthstat.png");
+      } else if (health >= 80) {
+        return require("@/assets/healthstat2.png");
+      } else if (health >= 60) {
+        return require("@/assets/healthstat3.png");
+      } else if (health >= 50) {
+        return require("@/assets/healthstat4.png");
+      } else if (health >= 30) {
+        return require("@/assets/healthstat4.png");
+      } else {
+        return require("@/assets/healthstat5.png");
+      }
     },
   },
 
   watch: {
     computedHealth(newHealth) {
       if (newHealth <= 0) {
-        this.isAlive = false; // Tamagotchi dies when health reaches 0
+        this.isAlive = false;
       }
     },
   },
 
   methods: {
+    getStatClass(statValue, isHunger) {
+      let value = parseFloat(statValue);
+      if (isHunger) {
+        if (value >= 80) return "text-red";
+        if (value >= 60) return "text-orange";
+        if (value >= 50) return "text-yellow";
+        if (value >= 30) return "text-light-green";
+        return "text-dark-green";
+      } else {
+        if (value >= 90) return "text-dark-green"; // Health-specific addition for 90+
+        if (value >= 80) return "text-dark-green";
+        if (value >= 60) return "text-light-green";
+        if (value >= 50) return "text-yellow";
+        if (value >= 30) return "text-orange";
+        return "text-red";
+      }
+    },
+
     feedPet() {
       if (this.isAlive) {
-        this.stats.hunger = Math.max(this.stats.hunger - 3, 0); // Feeding reduces hunger
+        this.stats.hunger = Math.max(this.stats.hunger - 3, 0);
       }
     },
 
     playGame() {
       if (this.isAlive) {
-        this.stats.happiness = Math.min(this.stats.happiness + 10, 100); // Playing increases happiness
+        this.stats.happiness = Math.min(this.stats.happiness + 10, 100);
       }
     },
 
     cleanPet() {
       if (this.isAlive) {
-        this.stats.cleanliness = Math.min(this.stats.cleanliness + 20, 100); // Cleaning restores cleanliness
+        this.stats.cleanliness = Math.min(this.stats.cleanliness + 20, 100);
       }
     },
 
     restartGame() {
-      // Reset stats to their initial values
       this.stats.happiness = 100;
       this.stats.hunger = 0;
-      this.stats.cleanliness = 100; // Reset cleanliness to 100
+      this.stats.cleanliness = 100;
       this.isAlive = true;
     },
   },
 
   mounted() {
-    // Simulate the passage of time (every 5 seconds)
     setInterval(() => {
       if (this.isAlive) {
-        // Increment hunger, decrease happiness, and cleanliness over time
-        if (this.stats.hunger < 100) this.stats.hunger += 5;
-        if (this.stats.happiness > 0) this.stats.happiness -= 1;
-        if (this.stats.cleanliness > 0) this.stats.cleanliness -= 2;
+        this.stats.hunger = Math.min(this.stats.hunger + 5, 100);
+        this.stats.happiness = Math.max(this.stats.happiness - 1, 0);
+        this.stats.cleanliness = Math.max(this.stats.cleanliness - 2, 0);
       }
     }, 5000);
   },
@@ -106,37 +163,38 @@ export default {
 
 <style scoped>
 @font-face {
-  font-family: 'Minecraft';
-  src: url('@/assets/fonts/Minecraft.ttf') format('truetype');
+  font-family: "Minecraft";
+  src: url("@/assets/fonts/Minecraft.ttf") format("truetype");
 }
 
 * {
-  font-family: 'Minecraft', sans-serif;
+  font-family: "Minecraft", sans-serif;
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
-  background-color: #f0f0f0; /* Light background */
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
   width: 100%;
 }
 
 .tamagotchi {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Center the content vertically */
-  align-items: center; /* Center the content horizontally */
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  height: 80vh; /* 80% of the viewport height */
+  height: 80vh;
   width: 100%;
-  max-width: 600px; /* Limit the width on large screens */
+  max-width: 600px;
   padding: 20px;
   box-sizing: border-box;
 }
@@ -147,25 +205,71 @@ html, body {
   max-width: 100%;
 }
 
-.stats {
+.stats-and-buttons {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
   flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.stat-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .stat-item {
-  margin: 0 15px;
   font-size: 18px;
-  min-width: 120px;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
-.buttons {
-  margin-top: 20px;
+.health-image {
+  width: 80px;
+  height: auto;
+  margin-top: 10px;
 }
 
-button {
+/* Dynamic Colors */
+.text-dark-green {
+  color: darkgreen;
+}
+
+.text-light-green {
+  color: lightgreen;
+}
+
+.text-yellow {
+  color: yellow;
+}
+
+.text-orange {
+  color: orange;
+}
+
+.text-red {
+  color: red;
+}
+
+.image-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.image-button img {
+  width: 80px;
+  height: auto;
+  display: block;
+  transition: transform 0.2s ease;
+}
+
+.image-button img:hover {
+  transform: scale(1.1);
+}
+
+.restart-button {
   margin-top: 10px;
   padding: 12px 24px;
   background-color: #333;
@@ -176,17 +280,14 @@ button {
   transition: background-color 0.3s;
 }
 
-button:hover {
+.restart-button:hover {
   background-color: #555;
 }
 
-button:focus {
+.restart-button:focus {
   outline: none;
 }
 
-/* Media queries for responsiveness */
-
-/* Mobile devices */
 @media (max-width: 480px) {
   .pet-image {
     width: 120px;
@@ -196,9 +297,9 @@ button:focus {
     font-size: 14px;
   }
 
-  button {
-    padding: 8px 16px;
-    font-size: 14px;
+  .image-button img,
+  .health-image {
+    width: 60px;
   }
 
   h1 {
@@ -206,7 +307,6 @@ button:focus {
   }
 }
 
-/* Tablets */
 @media (max-width: 768px) {
   .pet-image {
     width: 140px;
@@ -216,9 +316,9 @@ button:focus {
     font-size: 16px;
   }
 
-  button {
-    padding: 10px 18px;
-    font-size: 15px;
+  .image-button img,
+  .health-image {
+    width: 70px;
   }
 
   h1 {
@@ -226,9 +326,7 @@ button:focus {
   }
 }
 
-/* Laptops and desktops */
 @media (min-width: 769px) {
-  /* For large laptops (1920px) */
   @media (min-width: 1920px) {
     .tamagotchi {
       max-width: 100%;
@@ -243,9 +341,9 @@ button:focus {
       font-size: 20px;
     }
 
-    button {
-      padding: 12px 24px;
-      font-size: 18px;
+    .image-button img,
+    .health-image {
+      width: 100px;
     }
 
     h1 {
@@ -253,7 +351,6 @@ button:focus {
     }
   }
 
-  /* For general large screens */
   @media (min-width: 1200px) {
     .tamagotchi {
       max-width: 100%;
@@ -267,9 +364,9 @@ button:focus {
       font-size: 18px;
     }
 
-    button {
-      padding: 12px 22px;
-      font-size: 16px;
+    .image-button img,
+    .health-image {
+      width: 90px;
     }
 
     h1 {
