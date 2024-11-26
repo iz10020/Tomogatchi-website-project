@@ -1,55 +1,60 @@
 <template>
   <div class="tamagotchi">
     <h1>Your Tamagotchi</h1>
+    <!-- Display the primary pet image -->
     <img :src="petImage" alt="Tamagotchi" class="pet-image" v-if="isAlive" />
 
-    <div class="stats-and-buttons" v-if="isAlive">
-      <!-- Happiness -->
-      <div class="stat-group">
-        <p :class="getStatClass(stats.happiness)" class="stat-item">
-          Happiness: {{ stats.happiness }}%
-        </p>
-        <button @click="playGame" class="image-button">
-          <img src="@/assets/gamebutton.gif" alt="Play Game Button" />
-        </button>
-      </div>
+    <!-- Display additional images (e.g., rain or shower effect) -->
+    <div v-if="additionalImages.length > 0" class="additional-images-container">
+      <img v-for="(img, index) in additionalImages" :key="index" :src="img" alt="Additional image" class="additional-image" />
+    </div>
 
-      <!-- Health -->
-      <div class="stat-group health-stat">
-        <p :class="getStatClass(computedHealth)" class="stat-item">
+    <div v-if="isAlive" class="main-container">
+      <!-- Health Image and Stat Centered -->
+      <div class="health-image-container">
+        <img :src="healthImage" alt="Health Status" class="health-image" />
+        <p :class="getStatClass(computedHealth)" class="health-stat">
           Health: {{ computedHealth }}%
         </p>
-        <img :src="healthImage" alt="Health Status" class="health-image" />
       </div>
 
-      <!-- Hunger -->
-      <div class="stat-group">
-        <p :class="getStatClass(stats.hunger, true)" class="stat-item">
-          Hunger: {{ stats.hunger }}%
-        </p>
-        <button @click="feedPet" class="image-button">
-          <img src="@/assets/feedbutton.png" alt="Feed Button" />
-        </button>
-      </div>
+      <!-- Buttons in a Horizontal Row -->
+      <div class="buttons-row">
+        <div class="stat-group">
+          <button @click="playGame" class="image-button">
+            <img src="@/assets/gamebutton.gif" alt="Play Game Button" />
+          </button>
+          <p :class="getStatClass(stats.happiness)" class="stat-item">
+            Happiness: {{ stats.happiness }}%
+          </p>
+        </div>
 
-      <!-- Cleanliness -->
-      <div class="stat-group">
-        <p :class="getStatClass(stats.cleanliness)" class="stat-item">
-          Cleanliness: {{ stats.cleanliness }}%
-        </p>
-        <button @click="cleanPet" class="image-button">
-          <img src="@/assets/cleanbutton.png" alt="Clean Button" />
-        </button>
-      </div>
+        <div class="stat-group">
+          <button @click="feedPet" class="image-button">
+            <img src="@/assets/feedbutton.png" alt="Feed Button" />
+          </button>
+          <p :class="getStatClass(stats.hunger, true)" class="stat-item">
+            Hunger: {{ stats.hunger }}%
+          </p>
+        </div>
 
-      <!-- Energy -->
-      <div class="stat-group">
-        <p :class="getStatClass(stats.energy)" class="stat-item">
-          Energy: {{ stats.energy }}%
-        </p>
-        <button @click="putToSleep" class="image-button">
-          <img src="@/assets/sleepbutton.png" alt="Sleep Button" />
-        </button>
+        <div class="stat-group">
+          <button @click="cleanPet" class="image-button">
+            <img src="@/assets/cleanbutton.png" alt="Clean Button" />
+          </button>
+          <p :class="getStatClass(stats.cleanliness)" class="stat-item">
+            Cleanliness: {{ stats.cleanliness }}%
+          </p>
+        </div>
+
+        <div class="stat-group">
+          <button @click="putToSleep" class="image-button">
+            <img src="@/assets/sleepbutton.png" alt="Sleep Button" />
+          </button>
+          <p :class="getStatClass(stats.energy)" class="stat-item">
+            Energy: {{ stats.energy }}%
+          </p>
+        </div>
       </div>
     </div>
 
@@ -61,12 +66,14 @@
 </template>
 
 <script>
+import backgroundImage from "@/assets/grassland.png"; // Import background image
+
 export default {
   name: "TamagotchiDisplay",
 
   data() {
     return {
-      petImage: require("../assets/kirby star.gif"),
+      petImage: require("../assets/kirbyidle.gif"), // Default idle image
       stats: {
         happiness: 100,
         hunger: 0,
@@ -74,6 +81,8 @@ export default {
         energy: 100,
       },
       isAlive: true,
+      backgroundImage, // Store background image for later use
+      additionalImages: [], // Store the additional images to be displayed (like rain or shower)
     };
   },
 
@@ -102,14 +111,12 @@ export default {
   methods: {
     getStatClass(value, isHunger = false) {
       if (isHunger) {
-        // For hunger, lower values are better
         if (value <= 10) return "text-dark-green";
         if (value <= 30) return "text-light-green";
         if (value <= 50) return "text-yellow";
         if (value <= 70) return "text-orange";
         return "text-red";
       } else {
-        // For other stats, higher values are better
         if (value >= 90) return "text-dark-green";
         if (value >= 60) return "text-light-green";
         if (value >= 30) return "text-yellow";
@@ -119,22 +126,30 @@ export default {
     },
 
     feedPet() {
-      if (this.isAlive) this.stats.hunger = Math.max(this.stats.hunger - 3, 0);
+      if (this.isAlive) {
+        this.stats.hunger = Math.max(this.stats.hunger - 3, 0);
+        this.changePetImage("kirbyeating.gif");
+      }
     },
 
     playGame() {
       if (this.isAlive) {
         this.stats.happiness = Math.min(this.stats.happiness + 10, 100);
+        this.changePetImage("kirby star.gif");
       }
     },
 
     cleanPet() {
-      if (this.isAlive) this.stats.cleanliness = Math.min(this.stats.cleanliness + 20, 100);
+      if (this.isAlive) {
+        this.stats.cleanliness = Math.min(this.stats.cleanliness + 20, 100);
+        this.changePetImage(["kirbyshower.gif", "showerrain2.gif"]);
+      }
     },
 
     putToSleep() {
       if (this.isAlive) {
         this.stats.energy = Math.min(this.stats.energy + 1.5, 100);
+        this.changePetImage("kirbysleep.gif");
       }
     },
 
@@ -144,6 +159,24 @@ export default {
       this.stats.cleanliness = 100;
       this.stats.energy = 100;
       this.isAlive = true;
+      this.additionalImages = [];
+      this.petImage = require("../assets/kirbyidle.gif");
+    },
+
+    // This method updates the pet image and resets it after 3 seconds
+    changePetImage(imageNames) {
+      if (typeof imageNames === 'string') {
+        this.petImage = require(`@/assets/${imageNames}`);
+        this.additionalImages = []; // Clear additional images
+      } else {
+        this.petImage = require(`@/assets/${imageNames[0]}`);
+        this.additionalImages = imageNames.slice(1); // Set additional images for cleanliness (like the rain)
+      }
+
+      setTimeout(() => {
+        this.petImage = require("../assets/kirbyidle.gif");
+        this.additionalImages = [];
+      }, 3000); // Reset the image after 3 seconds
     },
   },
 
@@ -175,141 +208,138 @@ export default {
 
 html,
 body {
-  height: 100vh;
-  width: 100vw;
-  margin: 0;
-  padding: 0;
+  height: 100%; /* Ensure the body takes full height */
+  width: 100%; /* Ensure the body takes full width */
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f0f0f0;
+  background-image: url('@/assets/grassland.png'); /* Background image */
+  background-size: cover;
+  background-position: center center;
   overflow: hidden;
 }
 
 .tamagotchi {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   text-align: center;
-  height: 100vh;
-  width: 100vw;
-  padding: 2vh 2vw;
-  box-sizing: border-box;
+  padding: 2vh;
+  width: 100%;
+  max-width: 600px; /* Limit for larger screens */
+  margin: 0 auto; /* Make sure the content is centered horizontally */
+  min-height: 60vh; /* Ensure content fills at least 60% of the viewport height */
 }
 
 h1 {
-  font-size: 3vh;
-  margin-bottom: 1vh;
+  font-size: 3.5vh;
+  font-weight: bold;
+  color: black; /* Set text color to black */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Optional shadow for visibility */
+  margin-bottom: 2vh;
 }
 
 .pet-image {
-  width: 20vh;
-  height: auto;
-  max-width: 100%;
+  width: 30vh;
+  margin-bottom: 2vh;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.health-image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 3vh;
+}
+
+.health-image {
+  width: 15vh;
   margin-bottom: 1vh;
 }
 
-.stats-and-buttons {
+.health-stat {
+  font-size: 2.5vh;
+  font-weight: bold;
+}
+
+.buttons-row {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: 1vh 2vw;
   align-items: center;
-  width: 100%;
-  max-width: 1000px;
-  margin: 0 auto;
+  gap: 2vw;
+  flex-wrap: wrap;
 }
 
 .stat-group {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 18%;
-  min-width: 120px;
+  justify-content: center;
 }
 
 .stat-item {
-  font-size: 2vh;
-  margin-bottom: 0.5vh;
+  font-size: 1.8vh;
+  margin-top: 0.5vh;
   text-align: center;
 }
 
 .image-button {
   background: none;
   border: none;
-  padding: 0;
   cursor: pointer;
 }
 
 .image-button img {
   width: 10vh;
-  height: auto;
+  max-width: 80px;
   transition: transform 0.2s ease;
 }
 
 .image-button img:hover {
-  transform: scale(1.1);
+  transform: scale(1.2);
 }
 
-.health-image {
-  width: 10vh;
-  height: auto;
-  margin-top: 0.5vh;
+.text-dark-green {
+  color: darkgreen;
 }
 
-.text-dark-green { color: darkgreen; }
-.text-light-green { color: lightgreen; }
-.text-yellow { color: yellow; }
-.text-orange { color: orange; }
-.text-red { color: red; }
+.text-light-green {
+  color: lightgreen;
+}
+
+.text-yellow {
+  color: yellow;
+}
+
+.text-orange {
+  color: orange;
+}
+
+.text-red {
+  color: red;
+}
 
 .restart-button {
-  margin-top: 1vh;
+  margin-top: 2vh;
   padding: 1vh 2vw;
   background-color: #333;
   color: white;
   border: none;
   cursor: pointer;
   font-size: 2vh;
-  transition: background-color 0.3s;
+  align-self: center; /* Centers the button */
 }
 
 .restart-button:hover {
   background-color: #555;
-}
-
-/* Ensure stats are in a single line */
-@media (min-width: 1920px) {
-  .stats-and-buttons {
-    flex-wrap: nowrap;
-    justify-content: center;
-    align-items: flex-start;
-    gap: 2vw;
-  }
-
-  .stat-group {
-    width: auto;
-    min-width: 0;
-  }
-}
-
-@media (max-width: 768px) {
-  h1 {
-    font-size: 2.5vh;
-  }
-
-  .pet-image {
-    width: 15vh;
-  }
-
-  .stat-item {
-    font-size: 1.8vh;
-  }
-
-  .image-button img,
-  .health-image {
-    width: 8vh;
-  }
 }
 </style>
