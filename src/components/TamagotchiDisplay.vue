@@ -47,6 +47,13 @@
             </p>
           </div>
         </div>
+        <!-- Shop Button with Text -->
+        <div class="stat-group">
+          <button @click="goToShop" class="shop-button">
+            Go to Shop
+          </button>
+          <p class="stat-item"></p>
+        </div>
         <!-- Kill Button -->
         <div class="kill-button-container">
           <button @click="depleteStats" class="image-button">
@@ -62,6 +69,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import backgroundImage from "@/assets/grassland.png";
@@ -178,6 +186,9 @@ export default {
         this.currentAnimation = null;
       }, duration);
     },
+    goToShop() {
+      this.$router.push({ name: 'CharacterShop' }); // Ensure your shop route is named 'shop'
+    },
   },
   mounted() {
     setInterval(() => {
@@ -191,6 +202,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 @font-face {
@@ -355,4 +367,5 @@ h1 {
   align-items: center;
   justify-content: center;
 }
+
 </style>

@@ -31,13 +31,14 @@
       };
     },
     methods: {
-      selectCharacter(image) {
-        this.$emit('character-selected', image);
-      },
-      closeShop() {
-        this.$emit('close-shop');
-      },
-    },
+  selectCharacter(image) {
+    this.$emit('character-selected', image);
+  },
+  closeShop() {
+    // Navigate to the desired route when the shop is closed
+    this.$router.push({ name: 'Home' }); // Replace 'home' with the route name you want to navigate to
+  },
+},
   };
   </script>
   
