@@ -48,19 +48,23 @@
           </div>
         </div>
         <!-- Shop Button with Text -->
-        <div class="stat-group">
-          <button @click="goToShop" class="shop-button">
-            Go to Shop
-          </button>
-          <p class="stat-item"></p>
-        </div>
-        <!-- Kill Button -->
-        <div class="kill-button-container">
-          <button @click="depleteStats" class="image-button">
-            <img src="@/assets/killbutton.png" alt="Kill Button" />
-          </button>
-          <p class="stat-item">Deplete Stats</p>
-        </div>
+<!-- Shop Button with Image and Text -->
+<div class="stat-group">
+  <button @click="goToShop" class="image-button">
+    <img src="@/assets/shopbutton.png" alt="Shop Button" />
+  </button>
+  <p class="stat-item">Shop</p>
+</div>
+<div class="buttons-row">
+  <!-- Existing buttons... -->
+  
+  <div class="stat-group">
+    <button @click="depleteStats" class="image-button">
+      <img src="@/assets/killbutton.png" alt="Kill Button" />
+    </button>
+    <p class="stat-item">Deplete Stats</p>
+  </div>
+</div>
       </div>
     </div>
     <div v-else>
@@ -317,8 +321,8 @@ h1 {
 }
 
 .image-button img {
-  width: 10vh;
-  max-width: 80px;
+  width: 13vh;
+  max-width: 90px;
   transition: transform 0.2s ease;
 }
 

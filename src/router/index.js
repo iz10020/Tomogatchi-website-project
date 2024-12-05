@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import TamagotchiDisplay from '../components/TamagotchiDisplay.vue';
 import CharacterShop from '../components/CharacterShop.vue';
+import FirestoreComponent from '@/components/FirestoreComponent.vue';
 
 const routes = [
   {
@@ -12,6 +13,11 @@ const routes = [
     path: '/shop',
     name: 'CharacterShop',
     component: CharacterShop,
+  },
+  {
+    path: '/dbtest',
+    name: 'dbtest',
+    component: FirestoreComponent,
   },
 ];
 
