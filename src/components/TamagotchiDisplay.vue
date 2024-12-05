@@ -1,6 +1,9 @@
 <template>
   <div class="tamagotchi">
     <h1>Your Tamagotchi</h1>
+    <div>
+  <p>Selected Character: {{ selectedCharacter }}</p>
+</div>
     <img :src="petImage" alt="Tamagotchi" class="pet-image" v-if="isAlive" />
     <div v-if="additionalImages.length > 0" class="additional-images-container">
       <img v-for="(img, index) in additionalImages" :key="index" :src="img" alt="Additional image" class="additional-image" />
@@ -77,12 +80,14 @@
 
 <script>
 import backgroundImage from "@/assets/grassland.png";
+import { useCharacterStore } from "../stores/useCharacterStore"; // Import the store
 
 export default {
   name: "TamagotchiDisplay",
   data() {
     return {
-      petImage: require("../assets/kirbyidle.gif"),
+      petImage: "",
+      // character: "kirby",
       stats: {
         happiness: 100,
         hunger: 0,
@@ -96,6 +101,24 @@ export default {
     };
   },
   computed: {
+    // Get the selected character from the store
+    selectedCharacter() {
+      return useCharacterStore().selectedCharacter;
+    },
+
+    // Compute pet image based on selected character
+    getPetImage() {
+      // const characterImages = {
+      //   kirby: require("../assets/kirbyidle.gif"),
+      //   penguin: require("../assets/pengiunidle.gif"),
+      //   cat: require("../assets/catidle.gif"),
+      // };
+      // return characterImages[this.selectedCharacter] || characterImages.kirby;  // Default to Kirby if none
+      const character = this.selectedCharacter;
+      console.log(character);
+      return require(`@/assets/${character}idle.gif`);
+      // return character;
+    },
     computedHealth() {
       const happinessFactor = this.stats.happiness * 0.25;
       const hungerFactor = (100 - this.stats.hunger) * 0.25;
@@ -111,6 +134,14 @@ export default {
       if (health >= 60) return require("@/assets/healthstat3.png");
       if (health >= 30) return require("@/assets/healthstat4.png");
       return require("@/assets/healthstat5.png");
+    },
+  },
+  watch: {
+    // Watch for changes to selectedCharacter in the store
+    selectedCharacter() {
+      // Update petImage when selectedCharacter changes
+      this.petImage = this.getPetImage;
+      this.character = this.selectedCharacter;
     },
   },
   methods: {
@@ -132,25 +163,25 @@ export default {
     feedPet() {
       if (this.isAlive) {
         this.stats.hunger = Math.max(this.stats.hunger - 3, 0);
-        this.changePetImage("kirbyeating.gif");
+        this.changePetImage(`${this.selectedCharacter}eating.gif`);
       }
     },
     playGame() {
       if (this.isAlive) {
         this.stats.happiness = Math.min(this.stats.happiness + 10, 100);
-        this.changePetImage("kirby star.gif");
+        this.changePetImage(`${this.selectedCharacter} star.gif`);
       }
     },
     cleanPet() {
       if (this.isAlive) {
         this.stats.cleanliness = Math.min(this.stats.cleanliness + 20, 100);
-        this.changePetImage(["kirbyshower.gif", "showerrain2.gif"]);
+        this.changePetImage([`${this.selectedCharacter}shower.gif`, "showerrain2.gif"]);
       }
     },
     putToSleep() {
       if (this.isAlive) {
         this.stats.energy = Math.min(this.stats.energy + 1.5, 100);
-        this.changePetImage("kirbysleep.gif", 6000);
+        this.changePetImage(`${this.selectedCharacter}sleep.gif`, 6000);
       }
     },
     depleteStats() {
@@ -171,7 +202,7 @@ export default {
       this.stats.energy = 100;
       this.isAlive = true;
       this.additionalImages = [];
-      this.petImage = require("../assets/kirbyidle.gif");
+      this.petImage = require(`../assets/${this.selectedCharacter}idle.gif`);
     },
     changePetImage(imageNames, duration = 3000) {
       if (this.currentAnimation) {
@@ -185,7 +216,8 @@ export default {
         this.additionalImages = imageNames.slice(1);
       }
       this.currentAnimation = setTimeout(() => {
-        this.petImage = require("../assets/kirbyidle.gif");
+        // console.log(this.character);
+        this.petImage = require(`../assets/${this.selectedCharacter}idle.gif`);
         this.additionalImages = [];
         this.currentAnimation = null;
       }, duration);
@@ -195,6 +227,7 @@ export default {
     },
   },
   mounted() {
+    this.petImage = this.getPetImage; 
     setInterval(() => {
       if (this.isAlive) {
         this.stats.hunger = Math.min(this.stats.hunger + 5, 100);
