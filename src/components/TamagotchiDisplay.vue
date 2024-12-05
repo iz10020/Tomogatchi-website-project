@@ -182,7 +182,8 @@ export default {
         this.additionalImages = [];
       } else {
         this.petImage = require(`@/assets/${imageNames[0]}`);
-        this.additionalImages = imageNames.slice(1);
+        this.additionalImages = [require(`@/assets/${imageNames.slice(1)}`)];
+        // console.log(this.additionalImages)
       }
       this.currentAnimation = setTimeout(() => {
         this.petImage = require("../assets/kirbyidle.gif");
@@ -227,7 +228,7 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url('@/assets/grassland.png');
+  
   background-size: cover;
   background-position: center center;
   overflow: hidden;
@@ -239,11 +240,12 @@ html, body {
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 2vh;
+  background-image: url('@/assets/grassland.png');
+  /* padding: 2vh; */
   width: 100%;
-  max-width: 600px;
+  min-width: 90vw;
   margin: 0 auto;
-  min-height: 60vh;
+  min-height: 100vh;
 }
 
 h1 {
@@ -372,4 +374,13 @@ h1 {
   justify-content: center;
 }
 
+.additional-image {
+  position: fixed;       /* Zorgt ervoor dat het gifje vast staat op het scherm */
+  top: 0;                /* Plaatst het gifje helemaal bovenaan */
+  left: 0;               /* Plaatst het gifje helemaal aan de linkerkant */
+  width: 100vw;          /* Zorgt ervoor dat het gifje de volledige breedte van de viewport heeft */
+  height: 100vh;         /* Zorgt ervoor dat het gifje de volledige hoogte van de viewport heeft */
+  z-index: 5;            /* Zorgt ervoor dat het gifje boven andere elementen komt */
+  pointer-events: none;
+}
 </style>
