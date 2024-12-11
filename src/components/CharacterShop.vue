@@ -11,26 +11,26 @@
         @click="selectCharacter(character.name)"
       />
     </div>
-    <!-- Add a button to go to TamagotchiDisplay -->
-    <button
+    <!-- Replace the button with clickable text -->
+    <p
       v-if="store.selectedCharacter"
       @click="goToTamagotchiDisplay"
-      class="select-button"
+      class="return-link"
     >
-      Go Back to Tamagotchi
-    </button>
+      Return to Tamagotchi
+    </p>
   </div>
 </template>
 
 <script>
 import { useCharacterStore } from "../stores/useCharacterStore";
-import { useRouter } from 'vue-router';  // Import useRouter
+import { useRouter } from 'vue-router';
 
 export default {
   name: "CharacterShop",
   setup() {
     const store = useCharacterStore();
-    const router = useRouter();  // Initialize router
+    const router = useRouter();
 
     const characters = [
       { name: "kirby", image: require("@/assets/kirbyidle.gif") },
@@ -39,11 +39,10 @@ export default {
     ];
 
     function selectCharacter(name) {
-      store.selectedCharacter = name; // Update shared state with selected character
+      store.selectedCharacter = name;
     }
 
     function goToTamagotchiDisplay() {
-      // Use router.push to navigate to the TamagotchiDisplay
       router.push({ name: "Home" });
     }
 
@@ -58,33 +57,63 @@ export default {
 </script>
 
 <style scoped>
+@font-face {
+  font-family: "Minecraft";
+  src: url("@/assets/fonts/Minecraft.ttf") format("truetype");
+}
+
+* {
+  font-family: "Minecraft", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .character-shop {
   text-align: center;
+  background-image: url('@/assets/grassland.png');
+  background-size: cover;
+  background-position: center center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
+
+h2 {
+  font-size: 3.5vh;
+  font-weight: bold;
+  color: black;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin-bottom: 2vh;
+}
+
 .characters {
   display: flex;
   justify-content: center;
   gap: 1rem;
 }
+
 .character-image {
   width: 100px;
   cursor: pointer;
   transition: transform 0.2s ease;
 }
+
 .character-image:hover {
   transform: scale(1.1);
 }
-.select-button {
+
+.return-link {
   margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
+  font-size: 2vh;
+  color: blue;
+  text-decoration: underline;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
-.select-button:hover {
-  background-color: #45a049;
+
+.return-link:hover {
+  color: darkblue;
 }
 </style>
