@@ -8,7 +8,7 @@
   </template>
   
   <script>
-  import { db } from '@/firebase.js';  // Import your Firestore instance
+  import { db, collection, setDoc, doc } from '@/firebase.js';  // Import your Firestore instance
   
   export default {
     data() {
@@ -20,9 +20,10 @@
       async saveData() {
         try {
           // Add data to Firestore (you can specify your collection name)
-          await db.collection('yourCollection').add({
-            data: this.dataField,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          const docRef = doc(collection(db, 'testCollection')); // Genereer een nieuw document
+          await setDoc(docRef, {
+            // id: newDoc.value.id,
+            test: this.dataField
           });
           console.log('Data saved successfully!');
           this.dataField = ""; // Clear input after saving

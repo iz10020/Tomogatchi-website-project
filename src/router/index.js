@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import TamagotchiDisplay from '../components/TamagotchiDisplay.vue';
 import CharacterShop from '../components/CharacterShop.vue';
-import FirestoreComponent from '@/components/FirestoreComponent.vue';
+// import FirestoreComponent from '@/components/FirestoreComponent.vue';
+import DataTest from '@/components/DataTest.vue';
 
 const routes = [
   {
@@ -17,7 +18,7 @@ const routes = [
   {
     path: '/dbtest',
     name: 'dbtest',
-    component: FirestoreComponent,
+    component: DataTest,
   },
 ];
 
