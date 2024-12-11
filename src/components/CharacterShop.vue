@@ -1,81 +1,90 @@
 <template>
-    <div class="shop-container">
-      <h2>Select Your Tamagotchi Character</h2>
-      <div class="character-options">
-        <div 
-          v-for="(image, index) in characterImages" 
-          :key="index" 
-          class="character-option"
-          @click="selectCharacter(image)"
-        >
-          <img :src="image" alt="Tamagotchi Character" class="character-image" />
-        </div>
-      </div>
-      <button @click="closeShop" class="close-shop">Close Shop</button>
+  <div class="character-shop">
+    <h2>Select Your Character</h2>
+    <div class="characters">
+      <img
+        v-for="character in characters"
+        :key="character.name"
+        :src="character.image"
+        :alt="character.name"
+        class="character-image"
+        @click="selectCharacter(character.name)"
+      />
     </div>
-  </template>
-  
-  <script>
-  export default {
-    props: {
-      currentCharacter: String,
-    },
-    data() {
-      return {
-        characterImages: [
-          require('@/assets/kirbyidle.gif'),
-          require('@/assets/pengiunidle.gif'),
-          require('@/assets/catidle.gif'),
-          // Add more characters here
-        ],
-      };
-    },
-    methods: {
-  selectCharacter(image) {
-    this.$emit('character-selected', image);
+    <!-- Add a button to go to TamagotchiDisplay -->
+    <button
+      v-if="store.selectedCharacter"
+      @click="goToTamagotchiDisplay"
+      class="select-button"
+    >
+      Go Back to Tamagotchi
+    </button>
+  </div>
+</template>
+
+<script>
+import { useCharacterStore } from "../stores/useCharacterStore";
+import { useRouter } from 'vue-router';  // Import useRouter
+
+export default {
+  name: "CharacterShop",
+  setup() {
+    const store = useCharacterStore();
+    const router = useRouter();  // Initialize router
+
+    const characters = [
+      { name: "kirby", image: require("@/assets/kirbyidle.gif") },
+      { name: "pengiun", image: require("@/assets/pengiunidle.gif") },
+      { name: "cat", image: require("@/assets/catidle.gif") },
+    ];
+
+    function selectCharacter(name) {
+      store.selectedCharacter = name; // Update shared state with selected character
+    }
+
+    function goToTamagotchiDisplay() {
+      // Use router.push to navigate to the TamagotchiDisplay
+      router.push({ name: "Home" });
+    }
+
+    return {
+      characters,
+      selectCharacter,
+      store,
+      goToTamagotchiDisplay,
+    };
   },
-  closeShop() {
-    // Navigate to the desired route when the shop is closed
-    this.$router.push({ name: 'Home' }); // Replace 'home' with the route name you want to navigate to
-  },
-},
-  };
-  </script>
-  
-  <style scoped>
-  .shop-container {
-    text-align: center;
-    padding: 20px;
-  }
-  
-  .character-options {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
-  
-  .character-option {
-    cursor: pointer;
-  }
-  
-  .character-image {
-    width: 50px;
-    height: 50px;
-    border-radius: 10px;
-    transition: transform 0.2s;
-  }
-  
-  .character-image:hover {
-    transform: scale(1.1);
-  }
-  
-  .close-shop {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #333;
-    color: white;
-    border: none;
-    cursor: pointer;
-  }
-  </style>
-  
+};
+</script>
+
+<style scoped>
+.character-shop {
+  text-align: center;
+}
+.characters {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+.character-image {
+  width: 100px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+.character-image:hover {
+  transform: scale(1.1);
+}
+.select-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.select-button:hover {
+  background-color: #45a049;
+}
+</style>
