@@ -17,7 +17,7 @@
       @click="goToTamagotchiDisplay"
       class="select-button"
     >
-      Go to Tamagotchi Display
+      Go Back to Tamagotchi
     </button>
   </div>
 </template>
