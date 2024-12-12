@@ -1,5 +1,5 @@
 <template>
-  <div class="tamagotchi">
+  <div class="tamagotchi" :class="backgroundClass" >
     <h1>Your Tamagotchi</h1>
     <div>
   <p>Selected Character: {{ selectedCharacter }}</p>
@@ -79,7 +79,7 @@
 
 
 <script>
-import backgroundImage from "@/assets/grassland.png";
+import backgroundImage from "@/assets/kirbybackground.png";
 import { useCharacterStore } from "../stores/useCharacterStore"; // Import the store
 
 export default {
@@ -105,7 +105,14 @@ export default {
     selectedCharacter() {
       return useCharacterStore().selectedCharacter;
     },
-
+    backgroundClass() {
+      const classes = {
+        kirby: "background-kirby",
+        pengiun: "background-penguin",
+        cat: "background-cat",
+      };
+      return classes[this.selectedCharacter] || "background-default";
+    },
     // Compute pet image based on selected character
     getPetImage() {
       // const characterImages = {
@@ -273,12 +280,25 @@ html, body {
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-image: url('@/assets/grassland.png');
+  /* background-image: url('@/assets/grassland.png'); */
   /* padding: 2vh; */
   width: 100%;
   min-width: 90vw;
   margin: 0 auto;
   min-height: 100vh;
+}
+
+.background-kirby {
+  background-image: url('@/assets/kirbybackground.png');
+}
+.background-penguin {
+  background-image: url('@/assets/pengiunbackground.png');
+}
+.background-cat {
+  background-image: url('@/assets/catbackground.png');
+}
+.background-default {
+  background-image: url('@/assets/kirbybackground.png');
 }
 
 h1 {
