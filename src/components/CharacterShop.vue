@@ -11,14 +11,23 @@
         @click="selectCharacter(character.name)"
       />
     </div>
-    <!-- Replace the button with clickable text -->
-    <p
-      v-if="store.selectedCharacter"
-      @click="goToTamagotchiDisplay"
-      class="return-link"
-    >
+    
+    <!-- Display the name of the selected character -->
+    <p v-if="store.selectedCharacter" class="selected-character-text">
+      You have selected: {{ store.selectedCharacter }}
+    </p>
+
+    <!-- Text "Return to Tamagotchi" with a button underneath -->
+    <p v-if="store.selectedCharacter" class="return-text">
       Return to Tamagotchi
     </p>
+    <img
+      v-if="store.selectedCharacter"
+      src="@/assets/backbutton.png"
+      alt="Return Button"
+      class="return-button"
+      @click="goToTamagotchiDisplay"
+    />
   </div>
 </template>
 
@@ -71,7 +80,7 @@ export default {
 
 .character-shop {
   text-align: center;
-  background-image: url('@/assets/grassland.png');
+  background-image: url('@/assets/shoppage.png');  /* Replace with your background image */
   background-size: cover;
   background-position: center center;
   min-height: 100vh;
@@ -105,15 +114,29 @@ h2 {
   transform: scale(1.1);
 }
 
-.return-link {
+/* Style for the selected character's text */
+.selected-character-text {
   margin-top: 20px;
   font-size: 2vh;
-  color: blue;
-  text-decoration: underline;
+  color: white;  /* White text to contrast with the background */
+  font-weight: bold;
+}
+
+/* Style for the return text */
+.return-text {
+  margin-top: 20px;
+  font-size: 2vh;
+  color: white;  /* White text to contrast with the background */
+}
+
+/* Style for the return image button */
+.return-button {
+  margin-top: 10px;
+  width: 150px;
   cursor: pointer;
 }
 
-.return-link:hover {
-  color: darkblue;
+.return-button:hover {
+  transform: scale(1.1);
 }
 </style>
