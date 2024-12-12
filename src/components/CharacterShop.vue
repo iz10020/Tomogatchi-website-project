@@ -11,26 +11,35 @@
         @click="selectCharacter(character.name)"
       />
     </div>
-    <!-- Add a button to go to TamagotchiDisplay -->
-    <button
+    
+    <!-- Display the name of the selected character -->
+    <p v-if="store.selectedCharacter" class="selected-character-text">
+      You have selected: {{ store.selectedCharacter }}
+    </p>
+
+    <!-- Text "Return to Tamagotchi" with a button underneath -->
+    <p v-if="store.selectedCharacter" class="return-text">
+      Return to Tamagotchi
+    </p>
+    <img
       v-if="store.selectedCharacter"
+      src="@/assets/backbutton.png"
+      alt="Return Button"
+      class="return-button"
       @click="goToTamagotchiDisplay"
-      class="select-button"
-    >
-      Go Back to Tamagotchi
-    </button>
+    />
   </div>
 </template>
 
 <script>
 import { useCharacterStore } from "../stores/useCharacterStore";
-import { useRouter } from 'vue-router';  // Import useRouter
+import { useRouter } from 'vue-router';
 
 export default {
   name: "CharacterShop",
   setup() {
     const store = useCharacterStore();
-    const router = useRouter();  // Initialize router
+    const router = useRouter();
 
     const characters = [
       { name: "kirby", image: require("@/assets/kirbyidle.gif") },
@@ -39,11 +48,10 @@ export default {
     ];
 
     function selectCharacter(name) {
-      store.selectedCharacter = name; // Update shared state with selected character
+      store.selectedCharacter = name;
     }
 
     function goToTamagotchiDisplay() {
-      // Use router.push to navigate to the TamagotchiDisplay
       router.push({ name: "Home" });
     }
 
@@ -58,33 +66,77 @@ export default {
 </script>
 
 <style scoped>
+@font-face {
+  font-family: "Minecraft";
+  src: url("@/assets/fonts/Minecraft.ttf") format("truetype");
+}
+
+* {
+  font-family: "Minecraft", sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .character-shop {
   text-align: center;
+  background-image: url('@/assets/shoppage.png');  /* Replace with your background image */
+  background-size: cover;
+  background-position: center center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
+
+h2 {
+  font-size: 3.5vh;
+  font-weight: bold;
+  color: black;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  margin-bottom: 2vh;
+}
+
 .characters {
   display: flex;
   justify-content: center;
   gap: 1rem;
 }
+
 .character-image {
   width: 100px;
   cursor: pointer;
   transition: transform 0.2s ease;
 }
+
 .character-image:hover {
   transform: scale(1.1);
 }
-.select-button {
+
+/* Style for the selected character's text */
+.selected-character-text {
   margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 2vh;
+  color: white;  /* White text to contrast with the background */
+  font-weight: bold;
 }
-.select-button:hover {
-  background-color: #45a049;
+
+/* Style for the return text */
+.return-text {
+  margin-top: 20px;
+  font-size: 2vh;
+  color: white;  /* White text to contrast with the background */
+}
+
+/* Style for the return image button */
+.return-button {
+  margin-top: 10px;
+  width: 150px;
+  cursor: pointer;
+}
+
+.return-button:hover {
+  transform: scale(1.1);
 }
 </style>
