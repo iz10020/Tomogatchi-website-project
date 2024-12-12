@@ -194,7 +194,7 @@ export default {
     depleteStats() {
       if (this.isAlive) {
         this.stats.happiness = Math.max(this.stats.happiness - 10, 0);
-        this.stats.hunger = Math.min(this.stats.hunger + 10, 100);
+        this.stats.hunger = Math.min(this.stats.hunger + 5, 100);
         this.stats.cleanliness = Math.max(this.stats.cleanliness - 10, 0);
         this.stats.energy = Math.max(this.stats.energy - 10, 0);
         if (this.computedHealth <= 0) {
