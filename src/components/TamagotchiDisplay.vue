@@ -239,7 +239,7 @@ export default {
     setInterval(() => {
       if (this.isAlive) {
         this.stats.hunger = Math.min(this.stats.hunger + 5, 100);
-        this.stats.happiness = Math.max(this.stats.happiness - 1, 0);
+        this.stats.happiness = Math.max(this.stats.happiness - 10, 0);
         this.stats.cleanliness = Math.max(this.stats.cleanliness - 2, 0);
         this.stats.energy = Math.max(this.stats.energy - 2, 0);
       }
